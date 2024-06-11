@@ -1,5 +1,5 @@
 describe('template spec', () => {
   it('passes', () => {
-    cy.visit('http://localhost:5000/farm')
+    cy.visit('https://aluve-backend--aluve-farm.us-central1.hosted.app/')
   })
 })

@@ -402,7 +402,7 @@ const Home: React.FC = () => {
             <HiFire className="h-5 w-5" />
           </div>
           <div className="ml-3 text-sm font-normal">
-            Don't forget to save when you are done
+            Click save when you are done
           </div>
           <Toast.Toggle />
         </Toast>}
