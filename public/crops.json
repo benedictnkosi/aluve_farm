@@ -1,0 +1,168 @@
+
+{
+    "vegetables": [
+        {
+            "name": "Carrot",
+            "id": "vegetable_1"
+        },
+        {
+            "name": "Potato",
+            "id": "vegetable_2"
+        },
+        {
+            "name": "Cabbage",
+            "id": "vegetable_3"
+        },
+        {
+            "name": "Spinach",
+            "id": "vegetable_4"
+        },
+        {
+            "name": "Pumpkin",
+            "id": "vegetable_5"
+        },
+        {
+            "name": "Sweet Potato",
+            "id": "vegetable_6"
+        },
+        {
+            "name": "Green Beans",
+            "id": "vegetable_7"
+        },
+        {
+            "name": "Broccoli",
+            "id": "vegetable_8"
+        },
+        {
+            "name": "Cauliflower",
+            "id": "vegetable_9"
+        },
+        {
+            "name": "Pepper",
+            "id": "vegetable_10"
+        },
+        {
+            "name": "Tomato",
+            "id": "vegetable_11"
+        },
+        {
+            "name": "Onion",
+            "id": "vegetable_12"
+        },
+        {
+            "name": "Lettuce",
+            "id": "vegetable_13"
+        },
+        {
+            "name": "Beetroot",
+            "id": "vegetable_14"
+        },
+        {
+            "name": "Radish",
+            "id": "vegetable_15"
+        },
+        {
+            "name": "Cucumber",
+            "id": "vegetable_16"
+        },
+        {
+            "name": "Eggplant",
+            "id": "vegetable_17"
+        },
+        {
+            "name": "Zucchini",
+            "id": "vegetable_18"
+        },
+        {
+            "name": "Butternut",
+            "id": "vegetable_19"
+        },
+        {
+            "name": "Mushroom",
+            "id": "vegetable_20"
+        }
+    ],
+    "fruits": 
+    [
+        {
+            "name": "Apple",
+            "id": "fruit_1"
+        },
+        {
+            "name": "Banana",
+            "id": "fruit_2"
+        },
+        {
+            "name": "Orange",
+            "id": "fruit_3"
+        },
+        {
+            "name": "Mango",
+            "id": "fruit_4"
+        },
+        {
+            "name": "Pineapple",
+            "id": "fruit_5"
+        },
+        {
+            "name": "Papaya",
+            "id": "fruit_6"
+        },
+        {
+            "name": "Grapes",
+            "id": "fruit_7"
+        },
+        {
+            "name": "Strawberry",
+            "id": "fruit_8"
+        },
+        {
+            "name": "Watermelon",
+            "id": "fruit_9"
+        },
+        {
+            "name": "Lemon",
+            "id": "fruit_10"
+        },
+        {
+            "name": "Avocado",
+            "id": "fruit_11"
+        },
+        {
+            "name": "Pear",
+            "id": "fruit_12"
+        },
+        {
+            "name": "Peach",
+            "id": "fruit_13"
+        },
+        {
+            "name": "Plum",
+            "id": "fruit_14"
+        },
+        {
+            "name": "Kiwi",
+            "id": "fruit_15"
+        },
+        {
+            "name": "Guava",
+            "id": "fruit_16"
+        },
+        {
+            "name": "Fig",
+            "id": "fruit_17"
+        },
+        {
+            "name": "Passion Fruit",
+            "id": "fruit_18"
+        },
+        {
+            "name": "Apricot",
+            "id": "fruit_19"
+        },
+        {
+            "name": "Granadilla",
+            "id": "fruit_20"
+        }
+    ]
+}
