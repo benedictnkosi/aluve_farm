@@ -1,7 +1,10 @@
-name: Build and upload
+name: Cypress Tests
 
 on:
-  workflow_call:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -21,17 +24,5 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - run: npm ci
-      - run: npm run build --if-present
+      - run: npm run build
       - run: npm test
-
-      - name: Package release 
-        run: zip -r "release-artifact.zip" *
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-artifact
-          path: "release-artifact.zip"
-          retention-days: 1
-          overwrite: true
