@@ -52,7 +52,7 @@ interface Item {
 
 export async function getVisibleFarmsWithCrop(crop: string): Promise<Item[] | undefined> {
     try {
-        const q = query(collection(db, "farm"), where("visible", "==", true));
+        const q = query(collection(db, "farm"), where("visible", "==", true), where("crops", "!=", null));
         
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {

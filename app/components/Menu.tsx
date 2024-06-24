@@ -13,14 +13,16 @@ import {
   HiSun,
 } from "react-icons/hi";
 import { auth } from "../firebase/config";
+import { useRouter } from "next/navigation";
 
 const Menu = () => {
+
+    const router = useRouter();
 
     const handleSignOut = () => {
         auth.signOut().then(() => {
             sessionStorage.clear();
-            const router = require('next/router').default;
-            router.push("/");
+            window.location.href = "/";
           }).catch((error) => {
             console.error(error);
           });
@@ -42,15 +44,12 @@ return (
             </Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Collapse>
-                <Navbar.Link href="#" active>
-                    Home
+                <Navbar.Link href="/farm" active>
+                    Farm
                 </Navbar.Link>
-                <Navbar.Link as={Link} href="#">
-                    About
+                <Navbar.Link as={Link} href="/" onClick={handleSignOut}>
+                    Sign Out
                 </Navbar.Link>
-                <Navbar.Link href="#">Services</Navbar.Link>
-                <Navbar.Link href="#">Pricing</Navbar.Link>
-                <Navbar.Link href="#">Contact</Navbar.Link>
             </Navbar.Collapse>
         </Navbar>
 
@@ -71,7 +70,7 @@ return (
                 {/* <Sidebar.Item as={Link} href="/" prefetch={false} icon={HiChartPie}>Dashboard</Sidebar.Item> */}
                 <Sidebar.Item as={Link} href="/farm" prefetch={false} icon={HiUser}>My Farm</Sidebar.Item>
                 {/* <Sidebar.Item as={Link} href="/employees" prefetch={false} icon={HiUser}>Employees</Sidebar.Item> */}
-                <Sidebar.Item as={Link} href="/sign-in" prefetch={false} icon={HiUser} onClick={handleSignOut}>Sign Out</Sidebar.Item>
+                <Sidebar.Item as={Link} href="/" prefetch={false} icon={HiUser} onClick={handleSignOut}>Sign Out</Sidebar.Item>
                 </Sidebar.ItemGroup>
             </Sidebar.Items>
         </Sidebar>

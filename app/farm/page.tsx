@@ -1,20 +1,33 @@
 // pages/index.tsx
 "use client";
 import { useEffect, useState } from "react";
-
+import { useAuthState } from "react-firebase-hooks/auth";
 import "firebase/firestore";
-import { assignFarmToUser, createDocument, readDataFromFirestoreByValue, updateRecord, updateRecordByField } from "../firebase/firestoreFunctions";
+import {
+  assignFarmToUser,
+  createDocument,
+  getDocument,
+  readDataFromFirestoreByValue,
+  updateRecord,
+  updateRecordByField,
+} from "../firebase/firestoreFunctions";
 import { useForm } from "react-hook-form";
 import Menu from "../components/Menu";
 import FarmDetailsCard from "../components/FarmDetailsCard";
 import { Button, Card, Toast } from "flowbite-react";
 import { HiFire } from "react-icons/hi";
+import { useRouter } from "next/navigation";
+import { auth } from "../firebase/config";
 
+interface Farm {
+  id: string;
+  [key: string]: any;
+}
 
-
-interface ButtonData {
-  id: number;
-  name: string;
+interface Item {
+  id: string;
+  farm: Farm;
+  [key: string]: any;
 }
 
 const jsonData = {
@@ -178,105 +191,98 @@ const jsonData = {
   ],
 };
 
-const Home: React.FC = () => {
+export default function Home() {
+  const [user] = useAuthState(auth);
+  const router = useRouter();
+
   const [showAlert, setShowAlert] = useState(false);
   const [showToast, setShowToastt] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [farmAddress, setFarmAddress] = useState("");
-  const [isVisible, setVisible] = useState(false);
+  const [isVisible, setVisible] = useState(true);
 
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   const { register, handleSubmit, watch, reset } = useForm();
-  const [buttons, setButtons] = useState<ButtonData[]>([]);
   const name = watch("name");
-   const phone = watch("phone");
+  const phone = watch("phone");
   const [clickedCrops, setClickedCrops] = useState<string[]>([]);
 
   useEffect(() => {
-    reset({ name: sessionStorage.getItem("farm_name"), phone: sessionStorage.getItem("farm_phone")});
+    const userIdNonNull = user?.uid ?? "";
+    if (userIdNonNull.length < 1) {
+      //router.push("/");
+    } else {
+      const fetchData = async () => {
+        setIsLoading(true);
+        const items = (await readDataFromFirestoreByValue(
+          "user",
+          "userid",
+          userIdNonNull
+        )) as unknown as Item;
+        if (items[0].farm) {
+          const farmDocument = (await getDocument(items[0].farm)) as Farm; // Await the getDocument function call
+          sessionStorage.setItem("farm_name", farmDocument.name);
+          sessionStorage.setItem("farm_phone", farmDocument.phone);
+
+          sessionStorage.setItem("farm_address", farmDocument.address);
+          sessionStorage.setItem("visible", farmDocument.visible);
+          sessionStorage.setItem("crops", farmDocument.crops);
+          sessionStorage.setItem("farm_id", items[0].farm.id);
+          reset({
+            name: sessionStorage.getItem("farm_name"),
+            phone: sessionStorage.getItem("farm_phone"),
+          });
+          setFarmAddress(sessionStorage.getItem("farm_address") ?? "");
+          if (sessionStorage.getItem("visible") === "true") {
+            setVisible(true);
+          }
+          const cropsArray = JSON.parse(
+            sessionStorage.getItem("crops")?.toString() ?? "[]"
+          );
     
-    setFarmAddress(sessionStorage.getItem("farm_address") ?? "");
-    if (sessionStorage.getItem("visible") === "true") {
-      setVisible(true);
+            setClickedCrops(cropsArray || []);
+            setIsLoading(false);
+        } else {
+          console.log(`farm not found `);
+        }
+      };
+
+      fetchData();
+
+      
     }
+  }, [user]);
 
-    const cropsArray = JSON.parse(
-      sessionStorage.getItem("crops")?.toString() ?? "[]"
-    );
-    
-    setClickedCrops(cropsArray);
-  }, []);
-
-  const findLocation = async () => {
+  const saveLocation = async (lat: number, lng: number, address: string) => {
     setShowAlert(false);
-    
-    try {
-      const position = await getDeviceLocation();
-      const lat = (position as GeolocationPosition).coords.latitude;
-      const lng = (position as GeolocationPosition).coords.longitude;
-      setLatitude(lat.toString());
-      setLongitude(lng.toString());
-
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
-      );
-      const data = await response.json();
-      const suburb = data.results[0].address_components.find(
-        (item: { types: string | string[] }) =>
-          item.types.includes("sublocality")
-      ).long_name;
-      const town = data.results[0].address_components.find(
-        (item: { types: string | string[] }) =>
-          item.types.includes("locality")
-      ).long_name;
-      const province = data.results[0].address_components.find(
-        (item: { types: string | string[] }) =>
-          item.types.includes("administrative_area_level_1")
-      ).long_name;
-
-      setFarmAddress(`${suburb}, ${town}, ${province}`);
-
-    } catch (error) {
-      setMessage(
-        "Failed to get location, enable location services and try again"
-      );
-      setMessageType("error");
-      setShowAlert(true);
-    }
+    setLatitude(lat);
+    setLongitude(lng);
+    setFarmAddress(address);
   };
 
-  
-  function getDeviceLocation() {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject);
-    });
-  }
-
-
-  const saveFarmDetails = async () => {    
+  const saveFarmDetails = async () => {
     try {
       setIsLoading(true);
       setShowAlert(false);
       if (sessionStorage.getItem("farm_id")) {
         if (latitude) {
-            await updateRecord(
-              "farm",
-              {
+          await updateRecord(
+            "farm",
+            {
               name: name,
               phone: phone,
               address: farmAddress,
-              latitude: parseFloat(latitude),
-              longitude: parseFloat(longitude),
+              latitude: latitude,
+              longitude: longitude,
               visible: isVisible,
-              crops: sessionStorage.getItem("crops")
-              },
-              sessionStorage.getItem("farm_id") as string
-            );
+              crops: sessionStorage.getItem("crops"),
+            },
+            sessionStorage.getItem("farm_id") as string
+          );
           sessionStorage.setItem("farm_address", farmAddress);
         } else {
           await updateRecord(
@@ -285,20 +291,20 @@ const Home: React.FC = () => {
               name: name,
               phone: phone,
               visible: isVisible,
-              crops:sessionStorage.getItem("crops")
+              crops: sessionStorage.getItem("crops"),
             },
             sessionStorage.getItem("farm_id") as string
           );
         }
       } else {
-       const farm =  await createDocument("farm", {
+        const farm = await createDocument("farm", {
           name: name,
           phone: phone,
           address: farmAddress,
           latitude: latitude,
           longitude: longitude,
           visible: isVisible,
-          crops:sessionStorage.getItem("crops")
+          crops: sessionStorage.getItem("crops"),
         });
 
         //asign farm to user
@@ -332,9 +338,7 @@ const Home: React.FC = () => {
     if (clickedCrops.length > 0) {
       sessionStorage.setItem("crops", JSON.stringify(clickedCrops));
     }
-    
   }, [clickedCrops]);
-
 
   const saveCrops = async (name: string) => {
     setClickedCrops((prevState) => {
@@ -349,15 +353,12 @@ const Home: React.FC = () => {
     setTimeout(() => {
       setShowToastt(false);
     }, 5000);
-  
   };
 
-
-  
   return (
     <div className="flex-on-desktop">
       <Menu />
-      <main className="flex-on-desktop m-5">
+      <main className={`flex-on-desktop m-5 ${isLoading ? "opacity-50 pointer-events-none" : ""}`}>
         <FarmDetailsCard
           register={register}
           handleSubmit={handleSubmit}
@@ -366,7 +367,7 @@ const Home: React.FC = () => {
           message={message}
           messageType={messageType}
           farmAddress={farmAddress}
-          findLocation={findLocation}
+          saveLocation={saveLocation}
           isLoading={isLoading}
           isVisible={isVisible}
           handleCheckboxChange={handleCheckboxChange}
@@ -374,9 +375,6 @@ const Home: React.FC = () => {
         />
 
         <Card className="">
-        
-        
-        
           <p className="flex justify-center mb-4 text-2xl font-extrabold text-gray-900 dark:text-white md:text-2xl lg:text-3xl">
             What are you growing?
           </p>
@@ -385,9 +383,7 @@ const Home: React.FC = () => {
             {" "}
             {jsonData.vegetables.map((vegetable) => (
               <Button
-                color={
-                  clickedCrops.includes(vegetable.name) ? "blue" : "light"
-                }
+                color={clickedCrops.includes(vegetable.name) ? "blue" : "light"}
                 key={vegetable.id}
                 className="rounded-full w-1/6 m-1"
                 style={{ minWidth: "100px" }}
@@ -396,23 +392,20 @@ const Home: React.FC = () => {
                 {vegetable.name}
               </Button>
             ))}
-
-{showToast &&<Toast>
-          <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-cyan-100 text-cyan-500 dark:bg-cyan-800 dark:text-cyan-200">
-            <HiFire className="h-5 w-5" />
-          </div>
-          <div className="ml-3 text-sm font-normal">
-            Click save when you are done
-          </div>
-          <Toast.Toggle />
-        </Toast>}
-
-
+            {showToast && (
+              <Toast>
+                <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-cyan-100 text-cyan-500 dark:bg-cyan-800 dark:text-cyan-200">
+                  <HiFire className="h-5 w-5" />
+                </div>
+                <div className="ml-3 text-sm font-normal">
+                  Click save when you are done
+                </div>
+                <Toast.Toggle />
+              </Toast>
+            )}
           </div>
         </Card>
       </main>
     </div>
   );
-};
-
-export default Home;
+}

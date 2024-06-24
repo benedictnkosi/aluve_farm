@@ -47,7 +47,8 @@ const SignIn = () => {
         return;
       }
 
-      router.push("/dashboard");
+      sessionStorage.setItem("userid", "true" );
+      router.push("/farm");
 
     } catch (e) {
       console.error(e);

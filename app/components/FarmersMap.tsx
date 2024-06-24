@@ -63,29 +63,27 @@ const FarmersMap = ({
     setOpenModal(false);
   };
 
-  const handleAcceptButtonClick = () => {
-    // Add your logic here for accepting terms
-    console.log("Terms accepted");
-  };
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
 
-  const handleDeclineButtonClick = () => {
-    // Add your logic here for declining terms
-    console.log("Terms declined");
+  const handleMapLoad = () => {
+    setIsMapLoaded(true);
   };
 
   return (
-    <LoadScript googleMapsApiKey={apiKey}>
-      <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={5}>
-        {markers.map((marker) => (
-          <Marker
-            key={marker.id}
-            position={marker.position}
-            label={marker.label.substring(0, 1)}
-            title={marker.label}
-            onClick={() => handleMarkerClick(marker)}
-          />
-        ))}
-      </GoogleMap>
+    <LoadScript googleMapsApiKey={apiKey} onLoad={handleMapLoad}>
+      {isMapLoaded && (
+        <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={5}>
+          {markers.map((marker) => (
+            <Marker
+              key={marker.id}
+              position={marker.position}
+              label={marker.label.substring(0, 1)}
+              title={marker.label}
+              onClick={() => handleMarkerClick(marker)}
+            />
+          ))}
+        </GoogleMap>
+      )}
 
       <Modal show={openModal} onClose={handleModalClose}>
         <Modal.Header>{modalHeader}</Modal.Header>

@@ -32,11 +32,13 @@ export default function Home() {
     const farms = (await getVisibleFarmsWithCrop(
       selectedCrop
     )) as unknown as Farm;
+
     farms.forEach((farm: Farm) => {
       console.log(farm.name);
       const cropsArray = JSON.parse(farm.crops);
       console.log(cropsArray);
       // Add your logic here for each crop in cropsArray
+      
       cropsArray.forEach((crop: string) => {
         console.log(crop);
         // Add your logic here for each crop
@@ -48,7 +50,7 @@ export default function Home() {
 
       if (farm.latitude.length !== 0) {
         const updatedMarkers = farms
-          .filter((farm: Farm) => farm.latitude.length !== 0)
+          .filter((farm: Farm) => farm.latitude.length !== 0 && farm.crops)
           .map((farm: Farm) => {
             return {
               id: farm.id,
@@ -57,10 +59,10 @@ export default function Home() {
               address: farm.address,
               phone: farm.phone,
               crops: farm.crops
-                .replace(/","/g, ", ")
-                .replace(/"/g, "")
-                .replace("[", "")
-                .replace("]", ""),
+          .replace(/","/g, ", ")
+          .replace(/"/g, "")
+          .replace("[", "")
+          .replace("]", ""),
             };
           });
         setMarkers(updatedMarkers);
