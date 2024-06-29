@@ -39,7 +39,7 @@ return (
                     alt="Flowbite React Logo"
                 />
                 <span className="self-center whitespace-nowrap text-xl font-semibold text-gray-900 dark:text-white">
-                    Aluve Farm
+                Agri Community
                 </span>
             </Navbar.Brand>
             <Navbar.Toggle />
@@ -60,16 +60,16 @@ return (
             <Sidebar.Logo
                 href="#"
                 img="/logo-clear.png"
-                imgAlt="Aluve Farm App"
+                imgAlt="Agri Community"
                 className="text-gray-900"
             >
-                Aluve Farm
+                Agri Community
             </Sidebar.Logo>
             <Sidebar.Items>
                 <Sidebar.ItemGroup>
                 {/* <Sidebar.Item as={Link} href="/" prefetch={false} icon={HiChartPie}>Dashboard</Sidebar.Item> */}
                 <Sidebar.Item as={Link} href="/farm" prefetch={false} icon={HiUser}>My Farm</Sidebar.Item>
-                {/* <Sidebar.Item as={Link} href="/employees" prefetch={false} icon={HiUser}>Employees</Sidebar.Item> */}
+                <Sidebar.Item as={Link} href="/batches" prefetch={false} icon={HiUser}>Batches</Sidebar.Item>
                 <Sidebar.Item as={Link} href="/" prefetch={false} icon={HiUser} onClick={handleSignOut}>Sign Out</Sidebar.Item>
                 </Sidebar.ItemGroup>
             </Sidebar.Items>

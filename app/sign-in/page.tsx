@@ -11,10 +11,6 @@ import React from "react";
 // import global css
 import "../globals.css";
 
-type FormData = {
-  email: string;
-  password: string;
-};
 
 const SignIn = () => {
   const {
@@ -62,9 +58,9 @@ const SignIn = () => {
     <form onSubmit={handleSubmit(handleSignIn)}>
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-          <h1 className="flex justify-center mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
+        <h1 className="flex justify-center mb-4 text-2xl font-extrabold text-gray-900 dark:text-white md:text-2xl lg:text-3xl">
             <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
-              aluve farm
+            Agri Community
             </span>
           </h1>
           <div className="flex justify-center mb-6">

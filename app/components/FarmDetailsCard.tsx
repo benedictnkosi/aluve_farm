@@ -74,21 +74,28 @@ const FarmDetailsCard: React.FC<FarmDetailsCardProps> = ({
           </div>
         </div>
         <div>
+          <div className="mb-2 block">
+            <Label value="e.g. Hlabeni, KwaMashu K" />
+          </div>
           <Autocomplete
             className="w-full p-3 mb-4 bg-gray-50 border border-gray-300 rounded-lg outline-none text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
             apiKey={apiKey}
+            placeholder="Farm Location"
             onPlaceSelected={(place) => {
               console.log(place);
               if (place.geometry && place.geometry.location) {
                 console.log(place.geometry.location.lat());
                 console.log(place.geometry.location.lng());
-                const address = place.address_components?.map((component) => component.long_name).join(", ") || "";
+                const address =
+                  place.address_components
+                    ?.map((component) => component.long_name)
+                    .join(", ") || "";
                 console.log(address);
 
                 saveLocation(
                   place.geometry.location.lat(),
                   place.geometry.location.lng(),
-                  address,
+                  address
                 );
               }
             }}

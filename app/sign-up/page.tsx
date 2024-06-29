@@ -6,11 +6,11 @@ import {} from "react-firebase-hooks/auth";
 import Alert from "@/app/components/Alert";
 import { useForm } from "react-hook-form";
 
-
 import React from "react";
 // import global css
 import "../globals.css";
 import { createDocument } from "../firebase/firestoreFunctions";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const SignUp = () => {
   const {
@@ -18,7 +18,7 @@ const SignUp = () => {
     handleSubmit,
     formState: { errors },
     watch,
-    reset
+    reset,
   } = useForm();
   const [createUserWithEmailAndPassword] =
     useCreateUserWithEmailAndPassword(auth);
@@ -78,9 +78,9 @@ const SignUp = () => {
     <form onSubmit={handleSubmit(handleSignUp)}>
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-          <h1 className="flex justify-center mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
+          <h1 className="flex justify-center mb-4 text-2xl font-extrabold text-gray-900 dark:text-white md:text-2xl lg:text-3xl">
             <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">
-              aluve farm
+              Agri Community
             </span>
           </h1>
           <div className="flex justify-center mb-6">
@@ -90,37 +90,11 @@ const SignUp = () => {
             Sign Up
           </h3>
           {showAlert && <Alert message={message} type={messageType} />}
-          <input
-          placeholder="Your Name"
-            type="name"
-            {...register("name", {
-              required: "Name is required",
-            })}
-            className="w-full p-3 mb-4 bg-gray-50 border border-gray-300 rounded-lg outline-none text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="email"
-            {...register("email", {
-              required: "Email is required",
-              pattern: { value: /\S+@\S+\.\S+/, message: "Email is invalid" },
-            })}
-            className="w-full p-3 mb-4 bg-gray-50 border border-gray-300 rounded-lg outline-none text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full p-3 mb-4 bg-gray-50 border border-gray-300 rounded-lg outline-none text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
-            {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 6,
-                message: "Password must be at least 6 characters",
-              },
-            })}
-          />
-          <button className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-            Sign Up
-          </button>
+          <GoogleOAuthProvider clientId="1009282809407-sh8h2kgmot2q295a503sl5530pldnaj9.apps.googleusercontent.com">
+            <React.StrictMode>
+              <App />
+            </React.StrictMode>
+          </GoogleOAuthProvider>
           <a
             href="/sign-in"
             rel="stylesheet"

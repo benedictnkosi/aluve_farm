@@ -84,7 +84,7 @@ export default function Home() {
             alt="Flowbite React Logo"
           />
           <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-            Aluve Farm
+          Agri Community
           </span>
         </Navbar.Brand>
         <div className="flex md:order-2">

@@ -50,6 +50,16 @@ interface Item {
     }
 }
 
+export async function getDocFromFirestoreByValue(collectionName: string, docId: string): Promise<DocumentReference<unknown, DocumentData>> {
+    try {
+        const docRef = doc(db, collectionName, docId);
+        return docRef;
+    } catch (error) {
+        console.error('Error reading data from Firestore:', error);
+        throw error;
+    }
+}
+
 export async function getVisibleFarmsWithCrop(crop: string): Promise<Item[] | undefined> {
     try {
         const q = query(collection(db, "farm"), where("visible", "==", true), where("crops", "!=", null));
