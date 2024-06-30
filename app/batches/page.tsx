@@ -5,7 +5,6 @@ import Menu from "../components/Menu";
 import { useEffect, useState } from "react";
 import {
   createDocument,
-  getBatchesByFarmAndField,
   getByRefAndValue,
   getDocFromFirestoreByValue,
   readDataFromFirestore,

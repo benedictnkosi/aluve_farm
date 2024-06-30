@@ -6,6 +6,7 @@ import "firebase/firestore";
 import {
   assignFarmToUser,
   createDocument,
+  getDocFromFirestoreByValue,
   getDocument,
   readDataFromFirestoreByValue,
   updateRecord,
@@ -18,6 +19,7 @@ import { Button, Card, Toast } from "flowbite-react";
 import { HiFire } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import { auth } from "../firebase/config";
+import { DocumentData, DocumentReference } from "firebase/firestore";
 
 interface Farm {
   id: string;
@@ -224,14 +226,18 @@ export default function Home() {
           userIdNonNull
         )) as unknown as Item;
         if (items[0].farm) {
-          const farmDocument = (await getDocument(items[0].farm)) as Farm; // Await the getDocument function call
-          sessionStorage.setItem("farm_name", farmDocument.name);
-          sessionStorage.setItem("farm_phone", farmDocument.phone);
+          const farmDocument = (await getDocument(
+            items[0].farm as DocumentReference<unknown, DocumentData>
+          )) as Farm | undefined; // Await the getDocument function call only if items[0].farm is not undefined
+          if (farmDocument) {
+            sessionStorage.setItem("farm_name", farmDocument.name);
+            sessionStorage.setItem("farm_phone", farmDocument.phone);
 
-          sessionStorage.setItem("farm_address", farmDocument.address);
-          sessionStorage.setItem("visible", farmDocument.visible);
-          sessionStorage.setItem("crops", farmDocument.crops);
-          sessionStorage.setItem("farm_id", items[0].farm.id);
+            sessionStorage.setItem("farm_address", farmDocument.address);
+            sessionStorage.setItem("visible", farmDocument.visible);
+            sessionStorage.setItem("crops", farmDocument.crops);
+            sessionStorage.setItem("farm_id", items[0].farm.id);
+          }
           reset({
             name: sessionStorage.getItem("farm_name"),
             phone: sessionStorage.getItem("farm_phone"),
@@ -243,17 +249,15 @@ export default function Home() {
           const cropsArray = JSON.parse(
             sessionStorage.getItem("crops")?.toString() ?? "[]"
           );
-    
-            setClickedCrops(cropsArray || []);
-            setIsLoading(false);
+
+          setClickedCrops(cropsArray || []);
+          setIsLoading(false);
         } else {
           console.log(`farm not found `);
         }
       };
 
       fetchData();
-
-      
     }
   }, [user]);
 
@@ -307,13 +311,22 @@ export default function Home() {
           crops: sessionStorage.getItem("crops"),
         });
 
-        //asign farm to user
-        await assignFarmToUser(
-          sessionStorage.getItem("userid") as string,
-          farm
-        );
+        if (farm) {
+          const farmRef = await getDocFromFirestoreByValue(
+            "farm",
+            farm.id ?? ""
+          );
 
-        sessionStorage.setItem("farm_id", farm.id);
+          //asign farm to user
+          await assignFarmToUser(
+            sessionStorage.getItem("userid") as string,
+            farmRef
+          );
+
+          sessionStorage.setItem("farm_id", farm.id);
+        } else {
+          console.log("Farm not found");
+        }
       }
 
       sessionStorage.setItem("farm_name", name);
@@ -358,7 +371,11 @@ export default function Home() {
   return (
     <div className="flex-on-desktop">
       <Menu />
-      <main className={`flex-on-desktop m-5 ${isLoading ? "opacity-50 pointer-events-none" : ""}`}>
+      <main
+        className={`flex-on-desktop m-5 ${
+          isLoading ? "opacity-50 pointer-events-none" : ""
+        }`}
+      >
         <FarmDetailsCard
           register={register}
           handleSubmit={handleSubmit}
