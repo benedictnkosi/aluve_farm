@@ -199,7 +199,6 @@ export async function assignFarmToUser(userid: string, farmRef: DocumentReferenc
         await updateDoc(userDocRef.ref, userFarmData);
     } catch (error) {
         console.error('Error assigning farm to user:', error);
-        
     }
 }
 
