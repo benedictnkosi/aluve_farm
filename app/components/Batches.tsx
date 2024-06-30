@@ -1,13 +1,15 @@
 import React from "react";
-import { BatchCard } from "./BatchCard";
-import { Card, Spinner } from "flowbite-react";
+import { BatchTableRow } from "./BatchTableRow";
+import { Card, Spinner, Table } from "flowbite-react";
 
 interface BatchListProps {
   batch_list: Array<any>;
   isLoading: boolean;
+  harvestFunction: (selectedBatch: string, harvestUnit: string, harvestArray: Array<any>) => void;
+  transplantFunction: (selectedBatch: string, transplantArray: Array<any>) => void;
 }
 
-const BatchesList = ({ batch_list, isLoading }: BatchListProps) => {
+const BatchesList = ({ batch_list, isLoading, transplantFunction, harvestFunction }: BatchListProps) => {
   return (
     <Card className="m-5">
       <div className="mb-4 flex items-center justify-between">
@@ -16,23 +18,36 @@ const BatchesList = ({ batch_list, isLoading }: BatchListProps) => {
         </p>
       </div>
       {isLoading && <Spinner aria-label="loading" />}
-      <div className="flex flex-wrap">
-          {batch_list.map((batch, index) => (
-            <BatchCard
+      <div className="overflow-x-auto">
+      <Table>
+        <Table.Head>
+          <Table.HeadCell>Name</Table.HeadCell>
+          <Table.HeadCell>Seddling Date</Table.HeadCell>
+          <Table.HeadCell>Quantity</Table.HeadCell>
+          <Table.HeadCell>Transplant</Table.HeadCell>
+          <Table.HeadCell>Harvest</Table.HeadCell>
+          <Table.HeadCell>
+          Actions
+          </Table.HeadCell>
+        </Table.Head>
+        <Table.Body className="divide-y">
+        {batch_list.map((batch, index) => (
+            <BatchTableRow
               key={index}
               name={batch.name}
               seedlingDate={batch.seedling_date ? new Date(batch.seedling_date.seconds * 1000).toLocaleDateString() : ''}
               seedlingQuantity={batch.seedling_quantity}
-              transplantDate={batch.transplant_date ? new Date(batch.transplant_date.seconds * 1000).toLocaleDateString() : ''}
-              transplantQuantity={batch.transplant_quantity}
-              harvestDate={batch.harvest_date ? new Date(batch.harvest_date.seconds * 1000).toLocaleDateString() : ''}
-              harvestQuantity={batch.harvest_quantity}
+              transplant={batch.transplant}
+              harvest={batch.harvest}
               crop_seedling_days={batch.crop.seedling_days}
+              transplantFunction={transplantFunction}
+              harvestFunction={harvestFunction}
+              harvestUnits={batch.harvest_units}
             />
           ))}
-
-          {/* Rest of the list items */}
-      </div>
+        </Table.Body>
+      </Table>
+    </div>
     </Card>
   );
 };
