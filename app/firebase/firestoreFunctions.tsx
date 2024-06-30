@@ -21,7 +21,7 @@ interface Item {
     [key: string]: any;
   }
 
-  export async function readDataFromFirestoreByValue(collectionName: string, fieldName: string, value: string): Promise<Item[]> {
+export async function readDataFromFirestoreByValue(collectionName: string, fieldName: string, value: string): Promise<Item[] | undefined> {
     try {
         
         let q = query(collection(db, collectionName), where(fieldName, "==", value.toString()));
@@ -46,9 +46,39 @@ interface Item {
         }
     } catch (error) {
         console.error('Error reading data from Firestore:', error);
-        throw error;
+        
     }
+    return [] as Item[]; // Add a return statement for the case when querySnapshot is empty
 }
+
+export async function getByRefAndValue(collectionName: string, refColumn: string, refDocument: DocumentReference<unknown, DocumentData>, fieldName: string, value: string): Promise<Item[]> {
+    try {
+        let q = query(collection(db, collectionName), where(refColumn, "==", refDocument));
+
+        if(fieldName.length !== 0){
+            q = query(collection(db, collectionName), where(refColumn, "==", refDocument), where(fieldName, "==", value));
+        }
+            
+        
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            const items = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            })) as Item[];
+
+            return items;
+        } else {
+            throw new Error(`No documents found in batch for the provided farmRef and ${fieldName} with value ${value}`);
+        }
+    } catch (error) {
+        console.error('Error reading data from Firestore:', error);
+        
+    }
+    return [] as Item[]; // Add a return statement for the case when querySnapshot is empty
+}
+
 
 export async function getDocFromFirestoreByValue(collectionName: string, docId: string): Promise<DocumentReference<unknown, DocumentData>> {
     try {
@@ -56,7 +86,7 @@ export async function getDocFromFirestoreByValue(collectionName: string, docId: 
         return docRef;
     } catch (error) {
         console.error('Error reading data from Firestore:', error);
-        throw error;
+        throw new Error(`No document found in ${collectionName} for the provided docId ${docId}`);
     }
 }
 
@@ -82,7 +112,7 @@ export async function getVisibleFarmsWithCrop(crop: string): Promise<Item[] | un
         return [] as Item[]; // Add a return statement for the case when querySnapshot is empty
     } catch (error) {
         console.error('Error reading data from Firestore:', error);
-        throw error;
+        
     }
 }
 
@@ -101,8 +131,9 @@ export async function readDataFromFirestore(collectionName: string): Promise<Ite
         }
     } catch (error) {
         console.error('Error reading data from Firestore:', error);
-        throw error;
+        return [] as Item[];
     }
+    
 }
 
 export async function createDocument(collectionName: string, data: DocumentData) {
@@ -111,7 +142,7 @@ export async function createDocument(collectionName: string, data: DocumentData)
         return await addDoc(userCollection, data);
     } catch (error) {
         console.error('Error creating document on Firestore:', error);
-        throw error;
+        
     }
 }
 
@@ -121,7 +152,7 @@ export async function updateRecord(collectionName: string, data: DocumentData, d
         await updateDoc(docRef, data);
     } catch (error) {
         console.error('Error updating document on Firestore:', error);
-        throw error;
+        
     }
 }
 
@@ -147,7 +178,7 @@ export async function updateRecordByField(collectionName: string, data: Document
         await updateDoc(docRef.ref, data);
     } catch (error) {
         console.error('Error updating document on Firestore:', error);
-        throw error;
+        
     }
 }
 
@@ -168,7 +199,7 @@ export async function assignFarmToUser(userid: string, farmRef: DocumentReferenc
         await updateDoc(userDocRef.ref, userFarmData);
     } catch (error) {
         console.error('Error assigning farm to user:', error);
-        throw error;
+        
     }
 }
 

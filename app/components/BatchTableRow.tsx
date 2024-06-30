@@ -7,9 +7,10 @@ export interface BatchCardProps {
   transplant: Array<any>;
   harvest: Array<any>;
   crop_seedling_days: number;
-  transplantFunction: (selectedBatch: string, transplantArray: Array<any>) => void;
-  harvestFunction: (selectedBatch: string, harvestUnit: string, harvestArray: Array<any>) => void;
+  transplantFunction: (id: string, selectedBatch: string, transplantArray: Array<any>) => void;
+  harvestFunction: (id: string,selectedBatch: string, harvestUnit: string, harvestArray: Array<any>) => void;
   harvestUnits: string;
+  batchId: string;
 }
 
 export function BatchTableRow({
@@ -21,7 +22,8 @@ export function BatchTableRow({
   crop_seedling_days,
   transplantFunction,
   harvestFunction,
-  harvestUnits
+  harvestUnits,
+  batchId
 }: BatchCardProps) {
 
   const transplantString = transplant.map((item) => (
@@ -44,14 +46,14 @@ export function BatchTableRow({
       <Table.Cell>{seedlingDate}</Table.Cell>
       <Table.Cell>{seedlingQuantity}</Table.Cell>
       <Table.Cell>
-        {harvestString}
-      </Table.Cell>
-      <Table.Cell>
         {transplantString}
       </Table.Cell>
       <Table.Cell>
-        <a href="#" className="text-blue-500 dark:text-blue-400 mr-2" onClick={() => transplantFunction(name, transplant)}>Transplant</a>
-        <a href="#" className="text-blue-500 dark:text-blue-400 mr-2" onClick={() => harvestFunction(name, harvestUnits, harvest)}>Harvest</a>
+        {harvestString}
+      </Table.Cell>
+      <Table.Cell>
+        <a href="#" className="text-blue-500 dark:text-blue-400 mr-2" onClick={() => transplantFunction(batchId, name, transplant)}>Transplant</a>
+        <a href="#" className="text-blue-500 dark:text-blue-400 mr-2" onClick={() => harvestFunction(batchId, name, harvestUnits, harvest)}>Harvest</a>
       </Table.Cell>
     </Table.Row>
   );

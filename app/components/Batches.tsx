@@ -5,8 +5,8 @@ import { Card, Spinner, Table } from "flowbite-react";
 interface BatchListProps {
   batch_list: Array<any>;
   isLoading: boolean;
-  harvestFunction: (selectedBatch: string, harvestUnit: string, harvestArray: Array<any>) => void;
-  transplantFunction: (selectedBatch: string, transplantArray: Array<any>) => void;
+  harvestFunction: (id: string,selectedBatch: string, harvestUnit: string, harvestArray: Array<any>) => void;
+  transplantFunction: (id: string,selectedBatch: string, transplantArray: Array<any>) => void;
 }
 
 const BatchesList = ({ batch_list, isLoading, transplantFunction, harvestFunction }: BatchListProps) => {
@@ -43,6 +43,7 @@ const BatchesList = ({ batch_list, isLoading, transplantFunction, harvestFunctio
               transplantFunction={transplantFunction}
               harvestFunction={harvestFunction}
               harvestUnits={batch.harvest_units}
+              batchId={batch.id}
             />
           ))}
         </Table.Body>
