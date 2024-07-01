@@ -1,0 +1,11 @@
+env:
+-   variable: NEXT_PUBLIC_GOOGLE_API_KEY
+    value: AIzaSyD6zGB3Grn3yc-ur2hzWryPDs8PYkt3yg8
+    availability:
+    -   BUILD
+    -   RUNTIME
+-   variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyCtHfhQ6TlXw1v9DgtgkN4KbKkxtrCU4J4
+    availability:
+    -   BUILD
+    -   RUNTIME
