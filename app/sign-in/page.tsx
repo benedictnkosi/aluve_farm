@@ -48,7 +48,7 @@ const SignIn = () => {
 
     } catch (e) {
       console.error(e);
-      setMessage("Sign up failed");
+      setMessage("Sign-up failed");
       setMessageType("error");
       setShowAlert(true);
     }
