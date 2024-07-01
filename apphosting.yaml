@@ -9,3 +9,33 @@ env:
     availability:
     -   BUILD
     -   RUNTIME
+-   variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: aluve-farm.firebaseapp.com
+    availability:
+    -   BUILD
+    -   RUNTIME
+-   variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: aluve-farm
+    availability:
+    -   BUILD
+    -   RUNTIME
+-   variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: aluve-farm.appspot.com
+    availability:
+    -   BUILD
+    -   RUNTIME
+-   variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: 31277834988
+    availability:
+    -   BUILD
+    -   RUNTIME
+-   variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: 1:31277834988:web:412b7b5eb9034882b23bc9
+    availability:
+    -   BUILD
+    -   RUNTIME
+-   variable: NEXT_PUBLIC_FIREBASE_MEASSUREMENT_ID
+    value: G-1N3VBGKXS5
+    availability:
+    -   BUILD
+    -   RUNTIME
